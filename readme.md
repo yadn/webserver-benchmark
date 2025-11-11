@@ -1,17 +1,17 @@
 # Java Web Server Performance Benchmark
 
-## Project Overview
+## Overview
 
-This project is a performance benchmark comparing several common and modern Java server architectures. The goal is to clearly illustrate the trade-offs between blocking I/O models, thread pooling, the new **Virtual Threads** (Project Loom), and **Non-blocking I/O (NIO)** when handling concurrent client requests that involve simulated I/O latency.
+In this project I am trying to see how webservers based on different architectures perform under same load. 
 
-All server implementations are designed to handle a basic HTTP request, simulate a **200ms downstream I/O delay** (e.g., a database query or external service call), and then send a simple "Hello, World!" response.
+Same load here = 2000 concurrent connections over a 60-second duration made from 4 different client threads
 
 ### Architectures Implemented
 
-1.  **Single Thread (Blocking I/O):** One thread handles all connections sequentially. This is the baseline and demonstrates the fundamental issue of blocking I/O: the entire server is stalled by one client's delay.
-2.  **Thread Pool (Blocking I/O):** A fixed pool of platform threads handles clients. While better than a single thread, it still suffers from **Thread-per-Connection** overhead and resource exhaustion when the number of concurrent connections exceeds the pool size.
-3.  **Virtual Thread Pool (Blocking I/O with Virtual Threads):** Uses Java's modern Virtual Threads (via `Executors.newVirtualThreadPerTaskExecutor()`). This still uses the familiar **Thread-per-Connection** model but with extremely cheap, non-OS-blocking virtual threads, which is designed to scale with concurrent I/O-bound tasks.
-4.  **NIO Selector (Non-Blocking I/O):** Uses the classic Java NIO API (`Selector`, `SocketChannel`) to handle thousands of connections with a very small number of OS threads. The I/O delay is handled via a scheduler, demonstrating the core asynchronous nature of non-blocking I/O.
+1.  **Single Thread (Blocking I/O):** Single threaded server.. can handle only one at a time.
+2.  **Thread Pool (Blocking I/O):** A fixed pool of platform threads are serving clients. Assigns a **Thread-per-Connection** so once no of connections > pool size, it starts queueing. if all worker threads (= poolsize) are busy in IO then incoming requests wait in the task queue.. JVM will not schedule them unless some worker threads become free.. tight coupling b/w worker thread and OS thread.  
+3.  **Virtual Thread Pool (Blocking I/O with Virtual Threads):** Uses Java's modern Virtual Threads (via `Executors.newVirtualThreadPerTaskExecutor()`). This still uses the **Thread-per-Connection** model but with extremely cheap, non-OS-blocking virtual threads... all tasks will be assigned a virtual thread (it uses OS thread internally anyway) but, anytime, JVM detects a blocking call, it will park that virtual thread and put another waiting virtual thread on the carrier OS thread.. thats how the Virtual model is converting our `blocking-style-code` into Non-blocking execution !.. great stuff.. only overhead is JVM needs to do all this because of our blocking-style-code..
+4.  **NIO Selector (Non-Blocking I/O):** Uses the classic Java NIO API (`Selector`, `SocketChannel`) to handle thousands of connections with a very small number of OS threads.. Here we never write code that will be like a synchronous blocking call.. everything we write is in `reactive` = `non-blocking-async (promises)` style.. so OS never have to park the thread which is executing our reactive code.. problem: debugging is difficult..
 
 ---
 
