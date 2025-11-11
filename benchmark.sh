@@ -5,6 +5,7 @@ DURATION=60
 CONNECTIONS=2000
 OUT_DIR="out/production/webserver-benchmark"
 JAVA_OPTS="${JAVA_OPTS:--Xms256m -Xmx256m -XX:+UseG1GC}"
+RESULTS_DIR="results"
 
 echo "Web Server Benchmark Comparison"
 echo "-----------------"
@@ -13,7 +14,8 @@ echo "Connections: ${CONNECTIONS}"
 echo ""
 
 # Initialize comparison CSV
-COMPARISON_CSV="comparison.csv"
+mkdir -p "$RESULTS_DIR"
+COMPARISON_CSV="$RESULTS_DIR/comparison.csv"
 echo "name,connections,duration,requests_per_sec,lat_avg,lat_p50,lat_p75,lat_p90,lat_p99" > "$COMPARISON_CSV"
 
 # Check if wrk is installed
@@ -58,7 +60,7 @@ run_benchmark() {
     fi
 
     # Start lightweight CPU/memory sampler (1s interval)
-    SAMPLE_LOG="metrics_${NAME// /_}.log"
+    SAMPLE_LOG="$RESULTS_DIR/metrics_${NAME// /_}.log"
     echo "[sampler] logging CPU% and RSS to $SAMPLE_LOG"
     (
       while kill -0 "$SERVER_PID" 2>/dev/null; do
@@ -70,7 +72,7 @@ run_benchmark() {
     SAMPLER_PID=$!
 
     # Run benchmark (persist output)
-    OUT_TXT="wrk_${NAME// /_}.txt"
+    OUT_TXT="$RESULTS_DIR/wrk_${NAME// /_}.txt"
     wrk -t4 -c${CONNECTIONS} -d${DURATION}s --latency http://localhost:${PORT} | tee "$OUT_TXT"
 
     # Stop server

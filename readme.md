@@ -50,7 +50,7 @@ Same load here = 2000 concurrent connections over a 60-second duration made from
 
 The benchmark was executed with the following parameters: **2000 concurrent connections** over a **60-second duration**, with a simulated **200ms I/O latency** for every request.
 
-### Raw Data (comparison.csv)
+### Raw Data (results/comparison.csv)
 
 | name | connections | duration | requests\_per\_sec | lat\_avg | lat\_p50 | lat\_p99 ms |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -61,7 +61,7 @@ The benchmark was executed with the following parameters: **2000 concurrent conn
 | **NIO Selector** | 2000 | 60 | **9592.38** | **204.36ms** | **202.97ms** | **228.96** |
 
 ### Visual Comparison (comparison.png)
-![comparison](comparison.png)
+![comparison](results/comparison.png)
 
 
 ---
