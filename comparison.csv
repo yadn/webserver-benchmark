@@ -1,0 +1,6 @@
+name,connections,duration,requests_per_sec,lat_avg,lat_p50,lat_p75,lat_p90,lat_p99 ms
+Single Thread,2000,60,4.86,1.20s,1.20s,1.61s,1.81s,1810
+Thread Pool (10 threads),2000,60,49.06,1.04s,1.03s,1.44s,1.82s,1850
+Thread Pool (50 threads),2000,60,245.5,1.03s,1.03s,1.44s,1.84s,1850
+Virtual Thread Pool (per-task),2000,60,9455.56,206.80ms,204.19ms,205.58ms,206.79ms,315.64
+NIO Selector,2000,60,9592.38,204.36ms,202.97ms,204.65ms,207.57ms,228.96
