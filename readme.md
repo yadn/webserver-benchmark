@@ -60,7 +60,7 @@ The benchmark was executed with the following parameters: **2000 concurrent conn
 | **Virtual Thread Pool (per-task)** | 2000 | 60 | **9455.56** | **206.80ms** | **204.19ms** | **315.64** |
 | **NIO Selector** | 2000 | 60 | **9592.38** | **204.36ms** | **202.97ms** | **228.96** |
 
-### Visual Comparison (comparison.png)
+### Visual Comparison (results/comparison.png)
 ![comparison](results/comparison.png)
 
 
